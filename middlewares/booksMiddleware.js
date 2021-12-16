@@ -1,12 +1,12 @@
 const { booksModel } = require('../models');
 
 const verifyContentEmpty = (req, res, next) => {
-  const { title, isbn } = req.body;
-  if (!title) {
-    return res.status(400).send({ message: 'O campo "title" não pode estar vazio' });
-  }
-  if (!isbn) {
-    return res.status(400).send({ message: 'O campo "isbn" não pode estar vazio' });
+  const { body } = req;
+  const keysBody = Object.keys(body);
+  for (let i = 0; i < keysBody.length; i +=1 ) {
+    if (!body[keysBody[i]]) {
+      return res.status(400).send({ message: `O campo ${keysBody[i]} não pode estar vazio` });
+    };
   }
   next();
 };

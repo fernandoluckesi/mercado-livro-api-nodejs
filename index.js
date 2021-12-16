@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-const { categoriesBookController, booksController } = require('./controllers');
+const { categoriesBookController, booksController, usersController } = require('./controllers');
 const { booksMiddleware } = require('./middlewares');
 
 app.get(
@@ -28,6 +28,12 @@ app.post(
   booksMiddleware.verifyContentEmpty,
   booksMiddleware.verifyBookExist,
   booksController.addBook,
+);
+
+app.put(
+  '/books-update/:id',
+  booksMiddleware.verifyContentEmpty,
+  booksController.updateBook,
 );
 
 app.listen(8080, () => console.log('Servidor rodando na porta 8080'));

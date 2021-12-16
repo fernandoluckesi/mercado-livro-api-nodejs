@@ -7,7 +7,7 @@ const getById = async (id) => {
     const book = await db.collection('books').findOne({ _id: new ObjectId(id) });
     return book;
   } catch (err) {
-    return null;
+    return err;
   }
 };
 
@@ -17,7 +17,7 @@ const getByCategorieName = async (categoryName) => {
     const books = await db.collection('books').find({ 'category': categoryName }).toArray();
     return books;
   } catch (err) {
-    return null;
+    return err;
   }
 };
 
@@ -27,7 +27,7 @@ const getByTitle = async (title) => {
     const book = await db.collection('books').findOne({ 'title': title });
     return book;
   } catch (err) {
-    return null
+    return err
   }
 };
 
@@ -37,13 +37,14 @@ const getByIsbn = async (isbn) => {
     const book = await db.collection('books').findOne({ 'isbn': isbn });
     return book;
   } catch (err) {
-    return null
+    return err
   }
 };
 
 const addBook = async (
   title,
   author,
+  thumbnail_book,
   publishing_company,
   year_edition,
   edition,
@@ -52,12 +53,14 @@ const addBook = async (
   pages_count,
   isbn,
   category,
+  price_book,
 ) => {
   try {
     const db = await connection();
-    const newBook = await db.collection('books').insertOne({
+    await db.collection('books').insertOne({
       title,
       author,
+      thumbnail_book,
       publishing_company,
       year_edition,
       edition,
@@ -66,14 +69,55 @@ const addBook = async (
       pages_count,
       isbn,
       category,
+      price_book,
     });
     return true;
   } catch (err) {
-    console.log('não conectou');
-    console.log(err)
+    return err;
+  }
+};
+
+const updateBook = async (
+  id,
+  title,
+  author,
+  thumbnail_book,
+  publishing_company,
+  year_edition,
+  edition,
+  language,
+  country,
+  pages_count,
+  isbn,
+  category,
+  price_book,
+) => {
+  try {
+    const db = await connection();
+    await db.collection('books').updateOne(
+      { _id: ObjectId(id) }, {
+        $set: {
+          title,
+          author,
+          thumbnail_book,
+          publishing_company,
+          year_edition,
+          edition,
+          language,
+          country,
+          pages_count,
+          isbn,
+          category,
+          price_book,
+        }
+    },
+    );
+    const book = await getById(id);
+    return book;
+  } catch (e) {
     return null;
   }
-}
+};
 
 module.exports = {
   getById,
@@ -81,4 +125,5 @@ module.exports = {
   addBook,
   getByTitle,
   getByIsbn,
+  updateBook,
 };

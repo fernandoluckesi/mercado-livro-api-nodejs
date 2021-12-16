@@ -29,6 +29,7 @@ const addBook = async (req, res) => {
   const {
     title,
     author,
+    thumbnail_book,
     publishing_company,
     year_edition,
     edition,
@@ -36,12 +37,14 @@ const addBook = async (req, res) => {
     country,
     pages_count,
     isbn,
-    category
+    category,
+    price_book,
   } = req.body;
   try {
     await booksModel.addBook(
       title,
       author,
+      thumbnail_book,
       publishing_company,
       year_edition,
       edition,
@@ -50,6 +53,7 @@ const addBook = async (req, res) => {
       pages_count,
       isbn,
       category,
+      price_book,
     );
     return res.status(200).send({
       message: 'Livro cadastrado com sucesso',
@@ -59,11 +63,49 @@ const addBook = async (req, res) => {
       message: 'Cadastro de livro não efetuado',
     });
   }
+};
 
-}
+const updateBook = async (req, res) => {
+  const {
+    title,
+    author,
+    thumbnail_book,
+    publishing_company,
+    year_edition,
+    edition,
+    language,
+    country,
+    pages_count,
+    isbn,
+    category,
+    price_book,
+  } = req.body;
+  const bookId = req.params.id;
+  try {
+    const book = await booksModel.updateBook(
+      bookId,
+      title,
+      author,
+      thumbnail_book,
+      publishing_company,
+      year_edition,
+      edition,
+      language,
+      country,
+      pages_count,
+      isbn,
+      category,
+      price_book,
+    );
+    return res.status(200).json(book);
+  } catch(e) {
+    return e;
+  }
+};
 
 module.exports = {
   getByCategorieName,
   getById,
   addBook,
+  updateBook,
 };
